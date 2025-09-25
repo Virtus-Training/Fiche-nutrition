@@ -1,0 +1,45 @@
+{
+    "colors": {
+        "primary": "#1f538d",
+        "primary_dark": "#14375e",
+        "secondary": "#f0f0f0",
+        "accent": "#4a90e2",
+        "success": "#28a745",
+        "warning": "#ffc107",
+        "danger": "#dc3545",
+        "text_primary": "#212529",
+        "text_secondary": "#6c757d",
+        "background": "#ffffff",
+        "background_alt": "#f8f9fa",
+        "border": "#dee2e6"
+    },
+    "fonts": {
+        "family": "Segoe UI",
+        "size_small": 10,
+        "size_normal": 12,
+        "size_large": 14,
+        "size_title": 18
+    },
+    "spacing": {
+        "small": 5,
+        "normal": 10,
+        "large": 20,
+        "xlarge": 30
+    },
+    "component_styles": {
+        "entry": {
+            "height": 32,
+            "border_width": 1,
+            "corner_radius": 6
+        },
+        "button": {
+            "height": 36,
+            "corner_radius": 6,
+            "border_width": 0
+        },
+        "frame": {
+            "corner_radius": 10,
+            "border_width": 1
+        }
+    }
+}

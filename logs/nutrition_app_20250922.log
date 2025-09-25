@@ -1,0 +1,115 @@
+2025-09-22 18:08:03,006 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:08:04,880 - nutrition_generator.main - ERROR - Erreur fatale: 'PDFGenerator' object has no attribute 'colors'
+Traceback (most recent call last):
+  File "c:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\main.py", line 138, in main
+    app = MainWindow()
+  File "c:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\gui\main_window.py", line 42, in __init__
+    self.pdf_generator = PDFGenerator(self._get_config_path())
+                         ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\core\pdf_generator.py", line 44, in __init__
+    self.styles = self._create_styles()
+                  ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\core\pdf_generator.py", line 93, in _create_styles
+    textColor=self.colors.get('primary', HexColor('#1f538d')),
+              ^^^^^^^^^^^
+AttributeError: 'PDFGenerator' object has no attribute 'colors'
+2025-09-22 18:12:05,112 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:12:06,243 - nutrition_generator.main - ERROR - Erreur fatale: 'CTkFrame' object has no attribute 'grid_rowweight'
+Traceback (most recent call last):
+  File "C:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\main.py", line 138, in main
+    app = MainWindow()
+  File "C:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\gui\main_window.py", line 45, in __init__
+    self._setup_ui()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\gui\main_window.py", line 107, in _setup_ui
+    self.main_container.grid_rowweight(0, weight=1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'CTkFrame' object has no attribute 'grid_rowweight'
+2025-09-22 18:12:18,202 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:15:56,092 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:23:51,856 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 18:24:30,356 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:24:35,264 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 18:25:50,295 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:28:13,423 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:28:24,803 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 18:32:21,114 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:32:22,000 - nutrition_generator.main - ERROR - Erreur fatale: ['radiobutton_color'] are not supported arguments. Look at the documentation for supported arguments.
+Traceback (most recent call last):
+  File "C:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\main.py", line 138, in main
+    app = MainWindow()
+  File "C:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\gui\main_window.py", line 49, in __init__
+    self._setup_layout()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\gui\main_window.py", line 124, in _setup_layout
+    self.client_form = ClientForm(
+                       ~~~~~~~~~~^
+        self.main_container,
+        ^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        corner_radius=15
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\gui\components\client_form.py", line 24, in __init__
+    self._setup_ui()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\eric-\Documents\Fiche-nutrition\nutrition_generator\gui\components\client_form.py", line 103, in _setup_ui
+    self.sexe_male = ctk.CTkRadioButton(
+                     ~~~~~~~~~~~~~~~~~~^
+        self.sexe_frame,
+        ^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        fg_color="#4a90e2"
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\eric-\AppData\Local\Programs\Python\Python313\Lib\site-packages\customtkinter\windows\widgets\ctk_radiobutton.py", line 46, in __init__
+    super().__init__(master=master, bg_color=bg_color, width=width, height=height, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\eric-\AppData\Local\Programs\Python\Python313\Lib\site-packages\customtkinter\windows\widgets\core_widget_classes\ctk_base_class.py", line 46, in __init__
+    check_kwargs_empty(kwargs, raise_error=True)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\eric-\AppData\Local\Programs\Python\Python313\Lib\site-packages\customtkinter\windows\widgets\utility\utility_functions.py", line 18, in check_kwargs_empty
+    raise ValueError(f"{list(kwargs_dict.keys())} are not supported arguments. Look at the documentation for supported arguments.")
+ValueError: ['radiobutton_color'] are not supported arguments. Look at the documentation for supported arguments.
+2025-09-22 18:32:35,534 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:34:05,937 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:35:00,570 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 18:38:37,251 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:39:56,388 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:40:34,269 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 18:50:38,780 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 18:52:05,567 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 20:29:21,467 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 20:30:23,005 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 20:40:10,626 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 20:40:42,552 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 20:46:49,833 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 21:43:01,619 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:15:18,136 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:15:55,554 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:20:54,050 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:21:09,012 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:21:11,239 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:21:39,356 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:27:06,768 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:27:33,576 - nutrition_generator.main - INFO - Application interrompue par l'utilisateur
+2025-09-22 22:28:22,338 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:28:37,154 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:28:46,287 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:29:07,828 - nutrition_generator.main - INFO - Application interrompue par l'utilisateur
+2025-09-22 22:31:30,072 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:33:40,684 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:34:51,447 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:35:02,748 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:35:04,302 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:35:39,009 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:42:11,967 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:42:27,100 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:42:29,100 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:43:08,885 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:46:40,075 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:46:50,348 - nutrition_generator.main - INFO - Application fermée normalement
+2025-09-22 22:46:52,272 - nutrition_generator.main - INFO - Démarrage de l'application
+2025-09-22 22:47:08,407 - nutrition_generator.main - INFO - Application fermée normalement

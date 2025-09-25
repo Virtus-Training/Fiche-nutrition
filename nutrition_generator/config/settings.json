@@ -1,0 +1,33 @@
+{
+    "coach_info": {
+        "name": "Virtus Training",
+        "title": "Nutrition & Performance Coach",
+        "instagram": "virtus.training_",
+        "phone": "07 69 39 43 83",
+        "email": "virtustraining.fit@gmail.com",
+        "website": "www.virtus-training.fr"
+    },
+    "default_values": {
+        "activity_factor": 1.55,
+        "protein_ratio": 1.8,
+        "fat_ratio": 1.0,
+        "deficit_surplus": 0,
+        "gender": "male"
+    },
+    "app_settings": {
+        "window_width": 1000,
+        "window_height": 700,
+        "theme": "dark",
+        "language": "fr"
+    },
+    "pdf_settings": {
+        "page_format": "A4",
+        "margin_top": 50,
+        "margin_bottom": 50,
+        "margin_left": 50,
+        "margin_right": 50,
+        "font_size_title": 16,
+        "font_size_subtitle": 14,
+        "font_size_text": 10
+    }
+}
