@@ -132,7 +132,7 @@ def main():
         print("Lancement de l'application...")
         logger.info("Démarrage de l'application")
 
-        from .gui.main_window import MainWindow
+        from gui.main_window import MainWindow
 
         # Lancer l'application
         app = MainWindow()

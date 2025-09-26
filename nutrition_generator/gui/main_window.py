@@ -9,12 +9,12 @@ from datetime import datetime
 from typing import Optional, Dict, Any
 import customtkinter as ctk
 
-from .components.client_form import ClientForm
-from .components.calculations_panel import CalculationsPanel
-from .components.pdf_preview import PDFPreview
-from ..core.data_models import ClientData, NutritionResults, NutritionParams
-from ..core.calculations import NutritionCalculator
-from ..core.pdf_generator import PDFGenerator
+from gui.components.client_form import ClientForm
+from gui.components.calculations_panel import CalculationsPanel
+from gui.components.pdf_preview import PDFPreview
+from core.data_models import ClientData, NutritionResults, NutritionParams
+from core.calculations import NutritionCalculator
+from core.pdf_generator import PDFGenerator
 
 
 class MainWindow(ctk.CTk):

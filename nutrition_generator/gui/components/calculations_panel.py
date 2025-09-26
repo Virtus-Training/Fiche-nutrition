@@ -4,11 +4,11 @@ Panneau de calculs nutritionnels avec paramètres et résultats
 
 import customtkinter as ctk
 from typing import Dict, Callable, Optional
-from ...core.data_models import (
+from core.data_models import (
     ClientData, NutritionParams, NutritionResults,
     FORMULES_METABOLISME, NIVEAUX_ACTIVITE
 )
-from ...core.calculations import NutritionCalculator
+from core.calculations import NutritionCalculator
 
 
 class CalculationsPanel(ctk.CTkFrame):

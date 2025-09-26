@@ -4,7 +4,10 @@
       "Bash(dir:*)",
       "Bash(mkdir:*)",
       "Bash(python:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(del test_pdf_fix.py)",
+      "Bash(del \"C:\\Users\\Eric\\Documents\\Fiche-nutrition\\test_pdf_fix.py\")",
+      "Bash(del test_pdf_sublime.py)"
     ],
     "deny": [],
     "ask": []

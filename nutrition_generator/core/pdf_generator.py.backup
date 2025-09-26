@@ -500,25 +500,25 @@ class PremiumPDFGenerator:
     # Header
     # ------------------------------------------------------------------
     def create_perfect_header(self) -> Table:
-        """Header avec contact compact pour éviter le débordement selon le prompt d'enrichissement"""
+        """Header avec coordonnées parfaitement visibles selon le prompt sublime"""
         coach_info = self.config.get("coach_info", {})
 
-        # Style contact compact - réduit de 9 à 8px
+        # Style contact optimisé
         contact_style = ParagraphStyle(
-            name='ContactCompact',
-            fontSize=8,  # Réduit de 9 à 8
+            name='ContactStyle',
+            fontSize=9,
             fontName='Helvetica',
             textColor=self.colors['white'],
             alignment=2,  # Aligné à droite
-            leading=9,   # Interligne réduit
-            spaceAfter=0
+            leading=11,
+            spaceAfter=1
         )
 
-        # Contact ultra-compact sans labels
+        # Coordonnées complètes sur 3 lignes courtes
         contact_text = """
-        @virtus.training_<br/>
-        07 69 39 43 83<br/>
-        virtustraining.fit@gmail.com
+        Instagram : @virtus.training_<br/>
+        Tél : 07 69 39 43 83<br/>
+        Email : virtustraining.fit@gmail.com
         """
 
         # Logo compact avec placeholder si nécessaire
@@ -527,26 +527,26 @@ class PremiumPDFGenerator:
         # Titre parfaitement centré
         title_cell = self.create_centered_title()
 
-        # Largeurs ajustées pour éviter le débordement : 60 + 360 + 160 = 580px (< 595px A4)
+        # Structure header avec largeurs ajustées
         header_data = [
             [
-                logo_cell,  # 60px (réduit de 70)
-                title_cell, # 360px (réduit de 370)
-                Paragraph(contact_text, contact_style)  # 160px (réduit de 180)
+                logo_cell,  # 70px
+                title_cell, # 370px
+                Paragraph(contact_text, contact_style)  # 180px
             ]
         ]
 
-        header_table = Table(header_data, colWidths=[60, 360, 160])
+        header_table = Table(header_data, colWidths=[70, 370, 180])
         header_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, -1), HexColor('#2E86AB')),
             ('ALIGN', (0, 0), (0, 0), 'CENTER'),  # Logo centré
             ('ALIGN', (1, 0), (1, 0), 'CENTER'),  # Titre centré
             ('ALIGN', (2, 0), (2, 0), 'RIGHT'),   # Contact à droite
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('TOPPADDING', (0, 0), (-1, -1), 8),  # Réduit de 10 à 8
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),  # Réduit de 10 à 8
-            ('LEFTPADDING', (2, 0), (2, 0), 5),   # Réduit de 8 à 5
-            ('RIGHTPADDING', (2, 0), (2, 0), 5),  # Réduit de 8 à 5
+            ('TOPPADDING', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ('LEFTPADDING', (2, 0), (2, 0), 8),
+            ('RIGHTPADDING', (2, 0), (2, 0), 8),
         ]))
 
         return header_table
@@ -859,271 +859,6 @@ class PremiumPDFGenerator:
         )
 
         return profile_table
-
-    def create_enriched_profile(self, client: ClientData, results: NutritionResults, params: Dict[str, Any]) -> Table:
-        """Profil enrichi avec informations supplémentaires selon le prompt d'enrichissement"""
-        deficit = params.get("deficit_surplus_kcal", 0)
-        if deficit < -100:
-            objectif_text = "Perte de poids"
-            objectif_color = self.colors["accent_loss"]
-        elif deficit > 100:
-            objectif_text = "Prise de masse"
-            objectif_color = self.colors["accent_gain"]
-        else:
-            objectif_text = "Recomposition / Maintenance"
-            objectif_color = self.colors["accent_maintain"]
-
-        # Calcul de l'IMC
-        imc = client.poids_kg / ((client.taille_cm / 100) ** 2)
-        if imc < 18.5:
-            imc_category = "Insuffisance pondérale"
-        elif imc < 25:
-            imc_category = "Normal"
-        elif imc < 30:
-            imc_category = "Surpoids"
-        else:
-            imc_category = "Obésité"
-
-        activity_factor = params.get("facteur_activite", 1.55)
-        activity_text = self._activity_description(activity_factor)
-
-        # Profil existant + nouvelles informations
-        profile_data = [
-            ['NOM', client.nom.upper(), 'PRÉNOM', client.prenom.title(), 'ÂGE', f'{client.age} ans'],
-            ['TAILLE', f'{client.taille_cm} cm', 'POIDS', f'{self._format_decimal(client.poids_kg, 1)} kg', 'SEXE', 'Homme' if client.sexe == 'male' else 'Femme'],
-            ['ACTIVITÉ', activity_text, '', '', 'IMC', f'{imc:.1f} ({imc_category})'],
-            ['OBJECTIF', f'{objectif_text} ({self._format_signed(deficit)} kcal/j)', '', '', 'DURÉE', '12 semaines']
-        ]
-
-        profile_table = Table(profile_data, colWidths=[80, 80, 80, 80, 80, 80])
-        profile_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), HexColor('#E3F2FD')),
-            ('BACKGROUND', (0, 2), (-1, 2), HexColor('#F5F5F5')),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),  # Labels en gras
-            ('FONTNAME', (2, 0), (2, -1), 'Helvetica-Bold'),
-            ('FONTNAME', (4, 0), (4, -1), 'Helvetica-Bold'),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('GRID', (0, 0), (-1, -1), 0.5, HexColor('#BDBDBD')),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-            ('SPAN', (1, 2), (3, 2)),  # Activité sur 3 colonnes
-            ('SPAN', (1, 3), (3, 3)),  # Objectif sur 3 colonnes
-        ]))
-
-        return profile_table
-
-    def add_nutritional_targets(self, client: ClientData, results: NutritionResults, params: Dict[str, Any]) -> Table:
-        """Objectifs nutritionnels ajustés automatiquement selon le profil"""
-
-        # Calculs automatiques selon le profil
-        water_target = client.poids_kg * 35 / 1000  # L
-        fiber_target = 14 * (results.calories_objectif / 1000)  # g pour 1000 kcal
-        sodium_max = 2300  # mg standard
-        sugar_max = results.calories_objectif * 0.05 / 4  # 5% des calories
-        sat_fat_max = results.calories_objectif * 0.10 / 9  # 10% des calories
-
-        targets_data = [
-            ['OBJECTIFS NUTRITIONNELS QUOTIDIENS PERSONNALISÉS'],
-            ['Eau', f'{water_target:.1f} L', 'Fibres', f'{fiber_target:.0f} g', 'Sodium', f'<{sodium_max} mg'],
-            ['Sucres ajoutés', f'<{sugar_max:.0f} g', 'AG saturés', f'<{sat_fat_max:.0f} g', 'Cholestérol', '<300 mg']
-        ]
-
-        targets_table = Table(targets_data, colWidths=[120, 60, 120, 60, 120, 60])
-        targets_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), HexColor('#2E86AB')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), self.colors['white']),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('SPAN', (0, 0), (-1, 0)),  # Titre sur toute la largeur
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('GRID', (0, 1), (-1, -1), 0.5, HexColor('#BDBDBD')),
-            ('BACKGROUND', (0, 1), (-1, -1), HexColor('#F8F9FA')),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
-
-        return targets_table
-
-    def add_macro_breakdown(self, results: NutritionResults, meal_distribution_data: Dict = None) -> Table:
-        """Répartition par repas configurable depuis le formulaire"""
-
-        if meal_distribution_data is None:
-            # Valeurs par défaut si pas de distribution personnalisée
-            meal_distribution_data = {
-                'breakfast': {'percentage': 25, 'protein': int(results.proteines_g * 0.25), 'fat': int(results.lipides_g * 0.25), 'carbs': int(results.glucides_g * 0.25), 'calories': int(results.calories_objectif * 0.25)},
-                'lunch': {'percentage': 35, 'protein': int(results.proteines_g * 0.35), 'fat': int(results.lipides_g * 0.35), 'carbs': int(results.glucides_g * 0.35), 'calories': int(results.calories_objectif * 0.35)},
-                'snack': {'percentage': 10, 'protein': int(results.proteines_g * 0.10), 'fat': int(results.lipides_g * 0.10), 'carbs': int(results.glucides_g * 0.10), 'calories': int(results.calories_objectif * 0.10)},
-                'dinner': {'percentage': 30, 'protein': int(results.proteines_g * 0.30), 'fat': int(results.lipides_g * 0.30), 'carbs': int(results.glucides_g * 0.30), 'calories': int(results.calories_objectif * 0.30)}
-            }
-
-        meal_distribution = [
-            ['RÉPARTITION PAR REPAS'],
-            ['', 'Protéines', 'Lipides', 'Glucides', 'Calories'],
-            [f'Petit-déjeuner ({meal_distribution_data["breakfast"]["percentage"]}%)',
-             f'{meal_distribution_data["breakfast"]["protein"]} g',
-             f'{meal_distribution_data["breakfast"]["fat"]} g',
-             f'{meal_distribution_data["breakfast"]["carbs"]} g',
-             f'{meal_distribution_data["breakfast"]["calories"]} kcal'],
-            [f'Déjeuner ({meal_distribution_data["lunch"]["percentage"]}%)',
-             f'{meal_distribution_data["lunch"]["protein"]} g',
-             f'{meal_distribution_data["lunch"]["fat"]} g',
-             f'{meal_distribution_data["lunch"]["carbs"]} g',
-             f'{meal_distribution_data["lunch"]["calories"]} kcal'],
-            [f'Collation ({meal_distribution_data["snack"]["percentage"]}%)',
-             f'{meal_distribution_data["snack"]["protein"]} g',
-             f'{meal_distribution_data["snack"]["fat"]} g',
-             f'{meal_distribution_data["snack"]["carbs"]} g',
-             f'{meal_distribution_data["snack"]["calories"]} kcal'],
-            [f'Dîner ({meal_distribution_data["dinner"]["percentage"]}%)',
-             f'{meal_distribution_data["dinner"]["protein"]} g',
-             f'{meal_distribution_data["dinner"]["fat"]} g',
-             f'{meal_distribution_data["dinner"]["carbs"]} g',
-             f'{meal_distribution_data["dinner"]["calories"]} kcal']
-        ]
-
-        meal_table = Table(meal_distribution, colWidths=[100, 60, 60, 60, 60])
-        meal_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), HexColor('#27AE60')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), self.colors['white']),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('SPAN', (0, 0), (-1, 0)),
-            ('BACKGROUND', (0, 1), (-1, 1), HexColor('#E8F5E8')),
-            ('FONTNAME', (0, 1), (-1, 1), 'Helvetica-Bold'),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('GRID', (0, 1), (-1, -1), 0.5, HexColor('#BDBDBD')),
-            ('BACKGROUND', (0, 2), (-1, -1), HexColor('#F8F9FA')),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
-
-        return meal_table
-
-    def add_hydration_guide(self, client: ClientData, results: NutritionResults) -> Table:
-        """Ajouter guide d'hydratation détaillé"""
-
-        water_base = client.poids_kg * 35 / 1000  # L selon poids corporel
-
-        hydration_data = [
-            ['GUIDE D\'HYDRATATION PERSONNALISÉ'],
-            ['Base quotidienne', f'{water_base:.1f} L', 'Selon poids corporel (35ml/kg)'],
-            ['Avant entraînement', '250-300 ml', '30 min avant l\'effort'],
-            ['Pendant entraînement', '150-200 ml', 'Toutes les 15-20 min'],
-            ['Climat chaud', '+500-750 ml', 'Ajustement selon température']
-        ]
-
-        hydration_table = Table(hydration_data, colWidths=[120, 80, 320])
-        hydration_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), HexColor('#2196F3')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), self.colors['white']),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('SPAN', (0, 0), (-1, 0)),
-            ('FONTNAME', (0, 1), (0, -1), 'Helvetica-Bold'),
-            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
-            ('ALIGN', (1, 0), (1, -1), 'CENTER'),
-            ('ALIGN', (2, 0), (2, -1), 'LEFT'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('GRID', (0, 1), (-1, -1), 0.5, HexColor('#BDBDBD')),
-            ('BACKGROUND', (0, 1), (-1, -1), HexColor('#E3F2FD')),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-            ('LEFTPADDING', (0, 1), (0, -1), 10),
-            ('LEFTPADDING', (2, 1), (2, -1), 10),
-        ]))
-
-        return hydration_table
-
-    def create_compact_meal_preview(self) -> Table:
-        """Aperçu compact de la répartition des repas pour page 1"""
-
-        preview_data = [
-            ['RÉPARTITION JOURNALIÈRE'],
-            ['Petit-déjeuner', '25%', 'Déjeuner', '35%', 'Collation', '10%', 'Dîner', '30%']
-        ]
-
-        preview_table = Table(preview_data, colWidths=[70, 35, 70, 35, 70, 35, 70, 35])
-        preview_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), HexColor('#FF5722')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), self.colors['white']),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('SPAN', (0, 0), (-1, 0)),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('GRID', (0, 1), (-1, -1), 0.5, HexColor('#BDBDBD')),
-            ('BACKGROUND', (0, 1), (-1, -1), HexColor('#FFF3E0')),
-            ('FONTNAME', (1, 1), (-1, 1), 'Helvetica-Bold'),
-            ('FONTNAME', (3, 1), (3, 1), 'Helvetica-Bold'),
-            ('FONTNAME', (5, 1), (5, 1), 'Helvetica-Bold'),
-            ('FONTNAME', (7, 1), (7, 1), 'Helvetica-Bold'),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
-
-        return preview_table
-
-    def add_compact_hydration_summary(self, client: ClientData) -> Table:
-        """Résumé compact hydratation pour page 1"""
-
-        water_base = client.poids_kg * 35 / 1000  # L selon poids corporel
-
-        hydration_summary = [
-            ['HYDRATATION QUOTIDIENNE'],
-            ['Base', f'{water_base:.1f} L/jour', 'Entraînement', '+400-500 ml']
-        ]
-
-        hydration_table = Table(hydration_summary, colWidths=[80, 100, 80, 100])
-        hydration_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), HexColor('#2196F3')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), self.colors['white']),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('SPAN', (0, 0), (-1, 0)),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('GRID', (0, 1), (-1, -1), 0.5, HexColor('#BDBDBD')),
-            ('BACKGROUND', (0, 1), (-1, -1), HexColor('#E3F2FD')),
-            ('FONTNAME', (0, 1), (0, 1), 'Helvetica-Bold'),
-            ('FONTNAME', (2, 1), (2, 1), 'Helvetica-Bold'),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
-
-        return hydration_table
-
-    def add_meal_timing(self) -> Table:
-        """Ajouter guide de timing des repas"""
-
-        timing_data = [
-            ['TIMING OPTIMAL DES REPAS'],
-            ['6h-8h', 'Petit-déjeuner riche en protéines'],
-            ['10h-11h', 'Collation (si besoin)'],
-            ['12h-14h', 'Déjeuner équilibré'],
-            ['16h-17h', 'Collation pré-entraînement'],
-            ['19h-21h', 'Dîner léger en glucides'],
-            ['FENÊTRE', '12h de jeûne nocturne recommandé']
-        ]
-
-        timing_table = Table(timing_data, colWidths=[80, 440])
-        timing_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), HexColor('#FF5722')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), self.colors['white']),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('SPAN', (0, 0), (-1, 0)),
-            ('BACKGROUND', (0, -1), (-1, -1), HexColor('#E8F5E8')),
-            ('FONTNAME', (0, 1), (0, -1), 'Helvetica-Bold'),
-            ('ALIGN', (0, 0), (0, -1), 'CENTER'),
-            ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('GRID', (0, 1), (-1, -1), 0.5, HexColor('#BDBDBD')),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-            ('LEFTPADDING', (1, 1), (1, -1), 10),
-        ]))
-
-        return timing_table
 
     # Alias pour compatibilité
     def _build_energy_cards_uniform(self, results: NutritionResults, params: Dict[str, Any]) -> Table:
@@ -1539,61 +1274,7 @@ class PremiumPDFGenerator:
         <i>Fiche personnalisée selon votre profil. Pour ajustement, contactez-moi.</i>
         """
 
-        return Paragraph(footer_text, footer_style)
-
-    def create_premium_footer(self) -> List[Any]:
-        """Footer avec séparateur décoratif selon le prompt sublime"""
-        coach_info = self.config.get("coach_info", {})
-        date_str = datetime.now().strftime("%d/%m/%Y")
-
-        footer_elements = []
-
-        # Séparateur avant footer
-        separator = HRFlowable(
-            width="100%",
-            thickness=3,
-            color=HexColor('#2E86AB'),
-            spaceBefore=15,
-            spaceAfter=10
-        )
-        footer_elements.append(separator)
-
-        # Texte footer premium
-        footer_style = ParagraphStyle(
-            name='FooterPremium',
-            fontSize=9,
-            textColor=HexColor('#2C3E50'),
-            alignment=1,
-            leading=11
-        )
-
-        # Coordonnées du coach
-        contact_parts = []
-        if coach_info.get("instagram"):
-            contact_parts.append(f"@{coach_info['instagram']}")
-        if coach_info.get("phone"):
-            contact_parts.append(coach_info['phone'])
-        if coach_info.get("email"):
-            contact_parts.append(coach_info['email'])
-
-        if not contact_parts:
-            contact_parts = ["@virtus.training_", "07 69 39 43 83", "virtustraining.fit@gmail.com"]
-
-        contact_text = " | ".join(contact_parts)
-
-        footer_text = f"""
-        <b>Fiche établie le {date_str} par Virtus Training - Coaching nutritionnel professionnel</b><br/>
-        {contact_text}<br/>
-        <i>Fiche personnalisée selon votre profil personnel. Pour tout ajustement, contactez-moi.</i>
-        """
-
-        footer_elements.append(Paragraph(footer_text, footer_style))
-
-        return footer_elements
-
-    # Alias pour compatibilité
-    def create_footer_clean(self) -> List[Any]:
-        return self.create_premium_footer()
+        return Paragraph(footer_text, footer_style)\n\n    def create_premium_footer(self) -> List[Any]:\n        \"\"\"Footer avec s\u00e9parateur d\u00e9coratif selon le prompt sublime\"\"\"\n        coach_info = self.config.get(\"coach_info\", {})\n        date_str = datetime.now().strftime(\"%d/%m/%Y\")\n\n        footer_elements = []\n\n        # S\u00e9parateur avant footer\n        separator = HRFlowable(\n            width=\"100%\",\n            thickness=3,\n            color=HexColor('#2E86AB'),\n            spaceBefore=15,\n            spaceAfter=10\n        )\n        footer_elements.append(separator)\n\n        # Texte footer premium\n        footer_style = ParagraphStyle(\n            name='FooterPremium',\n            fontSize=9,\n            textColor=HexColor('#2C3E50'),\n            alignment=1,\n            leading=11\n        )\n\n        # Coordonn\u00e9es du coach\n        contact_parts = []\n        if coach_info.get(\"instagram\"):\n            contact_parts.append(f\"@{coach_info['instagram']}\")\n        if coach_info.get(\"phone\"):\n            contact_parts.append(coach_info['phone'])\n        if coach_info.get(\"email\"):\n            contact_parts.append(coach_info['email'])\n\n        if not contact_parts:\n            contact_parts = [\"@virtus.training_\", \"07 69 39 43 83\", \"virtustraining.fit@gmail.com\"]\n\n        contact_text = \" | \".join(contact_parts)\n\n        footer_text = f\"\"\"\n        <b>Fiche \u00e9tablie le {date_str} par Virtus Training - Coaching nutritionnel professionnel</b><br/>\n        {contact_text}<br/>\n        <i>Fiche personnalis\u00e9e selon votre profil personnel. Pour tout ajustement, contactez-moi.</i>\n        \"\"\"\n\n        footer_elements.append(Paragraph(footer_text, footer_style))\n\n        return footer_elements\n\n    # Alias pour compatibilit\u00e9\n    def create_footer_clean(self) -> List[Any]:\n        return self.create_premium_footer()"
 
     def add_decorative_elements(self) -> Dict[str, Any]:
         """Ajouter des éléments graphiques comme dans l'ancienne version selon le prompt"""
@@ -1634,25 +1315,7 @@ class PremiumPDFGenerator:
             'bullet_point': create_bullet_point
         }
 
-    def create_centered_section_title(self, text: str) -> Paragraph:
-        """Créer un titre parfaitement centré avec décoration selon le prompt"""
-        # Style pour titres centrés
-        centered_section_style = ParagraphStyle(
-            name='CenteredSection',
-            fontSize=12,
-            fontName='Helvetica-Bold',
-            textColor=HexColor('#2E86AB'),
-            alignment=1,  # CENTRÉ
-            spaceBefore=10,
-            spaceAfter=8,
-            borderWidth=0,
-            borderColor=HexColor('#2E86AB'),
-            borderPadding=5
-        )
-
-        return Paragraph(f"<b>{text}</b>", centered_section_style)
-
-    def _add_clean_styles(self) -> None:
+    def create_centered_section_title(self, text: str) -> Paragraph:\n        \"\"\"Cr\u00e9er un titre parfaitement centr\u00e9 avec d\u00e9coration selon le prompt\"\"\"\n        # Style pour titres centr\u00e9s\n        centered_section_style = ParagraphStyle(\n            name='CenteredSection',\n            fontSize=12,\n            fontName='Helvetica-Bold',\n            textColor=HexColor('#2E86AB'),\n            alignment=1,  # CENTR\u00c9\n            spaceBefore=10,\n            spaceAfter=8,\n            borderWidth=0,\n            borderColor=HexColor('#2E86AB'),\n            borderPadding=5\n        )\n\n        return Paragraph(f\"<b>{text}</b>\", centered_section_style)\n\n    def _add_clean_styles(self) -> None:
         """Ajouter les styles appropriés pour éviter les problèmes d'encodage selon le prompt"""
 
         # Styles pour éviter les problèmes d'encodage
@@ -2220,187 +1883,7 @@ class PremiumPDFGenerator:
     def generate_perfect_2page_pdf(self, *args, **kwargs) -> str:
         return self.generate_sublime_pdf(*args, **kwargs)
 
-    def generate_sublime_pdf(
-        self,
-        client: ClientData,
-        results: NutritionResults,
-        params_dict: Dict[str, Any],
-        output_path: str,
-        conseils: Optional[List[str]] = None,
-    ) -> str:
-        """Générer le PDF sublime avec tous les éléments graphiques selon le prompt"""
-        try:
-            doc = SimpleDocTemplate(
-                output_path,
-                pagesize=A4,
-                topMargin=25,
-                bottomMargin=25,
-                leftMargin=25,
-                rightMargin=25,
-                title="Fiche Nutritionnelle Sublime - Premium",
-            )
-
-            story: List[Any] = []
-            decorative = self.add_decorative_elements()
-
-            # === PAGE 1 ===
-            # Header avec séparateur décoratif
-            story.append(self.create_perfect_header())
-            story.append(decorative['header_separator'])
-            story.append(Spacer(1, 15))
-
-            # Profil personnel
-            story.append(self.create_centered_section_title("■ PROFIL PERSONNEL"))
-            story.append(self.create_clean_profile_table(client, results, params_dict))
-            story.append(Spacer(1, 20))
-
-            # Besoins énergétiques avec cards colorées
-            story.append(self.create_centered_section_title("■ BESOINS ÉNERGÉTIQUES"))
-            story.append(Paragraph("Vue rapide sur vos calories clefs.", self.styles["description_style"]))
-            story.append(Spacer(1, 12))
-            story.append(self.create_cards_with_colored_borders(results, params_dict))
-            story.append(Spacer(1, 25))
-
-            # === PAGE 2 ===
-            story.append(PageBreak())
-
-            # Macronutriments
-            story.append(self.create_centered_section_title("■ MACRONUTRIMENTS"))
-            story.append(decorative['section_separator'])
-            story.append(self.create_macro_section_side_by_side(results))
-            story.append(Spacer(1, 20))
-
-            # Courbe de poids
-            story.append(self.create_centered_section_title("■ ÉVOLUTION DU POIDS (12 SEMAINES)"))
-            story.append(decorative['section_separator'])
-            story.append(self._create_weight_chart_with_grid(client, params_dict))
-            story.append(Spacer(1, 20))
-
-            # === PAGE 3 ===
-            story.append(PageBreak())
-
-            # Conseils avec bordures colorées
-            story.append(self.create_centered_section_title("■ CONSEILS PERSONNALISÉS"))
-            story.append(decorative['section_separator'])
-            story.append(Spacer(1, 10))
-
-            # Ajouter les conseils colorés
-            conseils_elements = self.create_conseils_with_colored_borders(client, results, params_dict)
-            for conseil in conseils_elements:
-                story.append(conseil)
-
-            story.append(Spacer(1, 15))
-            story.extend(self.create_premium_footer())
-
-            doc.build(story)
-            return output_path
-
-        except Exception as exc:
-            raise RuntimeError(f"Erreur lors de la génération du PDF sublime: {exc}") from exc
-
-    def generate_enriched_pdf(
-        self,
-        client: ClientData,
-        results: NutritionResults,
-        params_dict: Dict[str, Any],
-        output_path: str,
-        conseils: Optional[List[str]] = None,
-    ) -> str:
-        """PDF complet avec tous les enrichissements selon le prompt d'enrichissement"""
-        try:
-            doc = SimpleDocTemplate(
-                output_path,
-                pagesize=A4,
-                topMargin=25,
-                bottomMargin=25,
-                leftMargin=25,
-                rightMargin=25,
-                title="Fiche Nutritionnelle Enrichie - Premium",
-            )
-
-            story: List[Any] = []
-            decorative = self.add_decorative_elements()
-
-            # === PAGE 1 ENRICHIE ===
-            # Header compact pour éviter débordement
-            story.append(self.create_perfect_header())
-            story.append(decorative['header_separator'])
-            story.append(Spacer(1, 12))
-
-            # Profil enrichi avec IMC, durée, objectifs
-            story.append(self.create_centered_section_title("■ PROFIL PERSONNEL"))
-            story.append(self.create_enriched_profile(client, results, params_dict))
-            story.append(Spacer(1, 15))
-
-            # Cards énergétiques
-            story.append(self.create_centered_section_title("■ BESOINS ÉNERGÉTIQUES"))
-            story.append(Paragraph("Vue rapide sur vos calories clefs.", self.styles["description_style"]))
-            story.append(Spacer(1, 12))
-            story.append(self.create_cards_with_colored_borders(results, params_dict))
-            story.append(Spacer(1, 15))
-
-            # Objectifs nutritionnels personnalisés
-            story.append(self.add_nutritional_targets(client, results, params_dict))
-            story.append(Spacer(1, 15))
-
-            # Aperçu des macros par repas (compact pour page 1)
-            story.append(self.create_compact_meal_preview())
-            story.append(Spacer(1, 15))
-
-            # Guide d'hydratation compact
-            story.append(self.add_compact_hydration_summary(client))
-
-            # === PAGE 2 ENRICHIE ===
-            story.append(PageBreak())
-
-            # Macronutriments avec répartition par repas
-            story.append(self.create_centered_section_title("■ MACRONUTRIMENTS"))
-            story.append(decorative['section_separator'])
-            story.append(self.create_macro_section_side_by_side(results))
-            story.append(Spacer(1, 15))
-
-            # Répartition par repas
-            story.append(self.add_macro_breakdown(results))
-            story.append(Spacer(1, 15))
-
-            # Courbe de poids
-            story.append(self.create_centered_section_title("■ ÉVOLUTION DU POIDS (12 SEMAINES)"))
-            story.append(decorative['section_separator'])
-            story.append(self._create_weight_chart_with_grid(client, params_dict))
-            story.append(Spacer(1, 20))
-
-            # === PAGE 3 ENRICHIE ===
-            story.append(PageBreak())
-
-            # Conseils enrichis
-            story.append(self.create_centered_section_title("■ CONSEILS PERSONNALISÉS"))
-            story.append(decorative['section_separator'])
-            story.append(Spacer(1, 10))
-
-            # Ajouter les conseils colorés
-            conseils_elements = self.create_conseils_with_colored_borders(client, results, params_dict)
-            for conseil in conseils_elements:
-                story.append(conseil)
-
-            story.append(Spacer(1, 15))
-
-            # Hydratation détaillée
-            story.append(self.add_hydration_guide(client, results))
-            story.append(Spacer(1, 10))
-
-            # Timing des repas
-            story.append(self.add_meal_timing())
-            story.append(Spacer(1, 15))
-
-            story.extend(self.create_premium_footer())
-
-            doc.build(story)
-            return output_path
-
-        except Exception as exc:
-            raise RuntimeError(f"Erreur lors de la génération du PDF enrichi: {exc}") from exc
-
-    def _create_profile_energy_combined(self, client: ClientData, results: NutritionResults, params_dict: Dict[str, Any]) -> Table:
+    def generate_sublime_pdf(\n        self,\n        client: ClientData,\n        results: NutritionResults,\n        params_dict: Dict[str, Any],\n        output_path: str,\n        conseils: Optional[List[str]] = None,\n    ) -> str:\n        \"\"\"G\u00e9n\u00e9rer le PDF sublime avec tous les \u00e9l\u00e9ments graphiques selon le prompt\"\"\"\n        try:\n            doc = SimpleDocTemplate(\n                output_path,\n                pagesize=A4,\n                topMargin=25,\n                bottomMargin=25,\n                leftMargin=25,\n                rightMargin=25,\n                title=\"Fiche Nutritionnelle Sublime - Premium\",\n            )\n\n            story: List[Any] = []\n            decorative = self.add_decorative_elements()\n\n            # === PAGE 1 ===\n            # Header avec s\u00e9parateur d\u00e9coratif\n            story.append(self.create_perfect_header())\n            story.append(decorative['header_separator'])\n            story.append(Spacer(1, 15))\n\n            # Profil personnel\n            story.append(self.create_centered_section_title(\"\u25a0 PROFIL PERSONNEL\"))\n            story.append(self.create_clean_profile_table(client, results, params_dict))\n            story.append(Spacer(1, 20))\n\n            # Besoins \u00e9nerg\u00e9tiques avec cards color\u00e9es\n            story.append(self.create_centered_section_title(\"\u25a0 BESOINS \u00c9NERG\u00c9TIQUES\"))\n            story.append(Paragraph(\"Vue rapide sur vos calories clefs.\", self.styles[\"description_style\"]))\n            story.append(Spacer(1, 12))\n            story.append(self.create_cards_with_colored_borders(results, params_dict))\n            story.append(Spacer(1, 25))\n\n            # === PAGE 2 ===\n            story.append(PageBreak())\n\n            # Macronutriments\n            story.append(self.create_centered_section_title(\"\u25a0 MACRONUTRIMENTS\"))\n            story.append(decorative['section_separator'])\n            story.append(self.create_macro_section_side_by_side(results))\n            story.append(Spacer(1, 20))\n\n            # Courbe de poids\n            story.append(self.create_centered_section_title(\"\u25a0 \u00c9VOLUTION DU POIDS (12 SEMAINES)\"))\n            story.append(decorative['section_separator'])\n            story.append(self.create_weight_chart_with_grid(client, params_dict))\n            story.append(Spacer(1, 20))\n\n            # === PAGE 3 ===\n            story.append(PageBreak())\n\n            # Conseils avec bordures color\u00e9es\n            story.append(self.create_centered_section_title(\"\u25a0 CONSEILS PERSONNALIS\u00c9S\"))\n            story.append(decorative['section_separator'])\n            story.append(Spacer(1, 10))\n\n            # Ajouter les conseils color\u00e9s\n            conseils_elements = self.create_conseils_with_colored_borders(client, results, params_dict)\n            for conseil in conseils_elements:\n                story.append(conseil)\n\n            story.append(Spacer(1, 15))\n            story.extend(self.create_premium_footer())\n\n            doc.build(story)\n            return output_path\n\n        except Exception as exc:\n            raise RuntimeError(f\"Erreur lors de la g\u00e9n\u00e9ration du PDF sublime: {exc}\") from exc\n\n    def _create_profile_energy_combined(self, client: ClientData, results: NutritionResults, params_dict: Dict[str, Any]) -> Table:
         """Combiner profil et besoins sur une ligne pour économiser l'espace"""
         profile_section = self._build_profile_section(client, results, params_dict)[1]  # Skip title
         energy_section = self._build_energy_cards_uniform(results, params_dict)

@@ -8,7 +8,7 @@ import platform
 from datetime import datetime
 from typing import List, Dict, Any, Optional, Callable
 import customtkinter as ctk
-from ...core.data_models import FicheMetadata
+from core.data_models import FicheMetadata
 
 
 class PDFPreview(ctk.CTkFrame):

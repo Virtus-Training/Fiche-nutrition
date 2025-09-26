@@ -5,7 +5,7 @@ Contient les formules pour BMR, TDEE et répartition des macronutriments
 
 import math
 from typing import Tuple, Dict, Any
-from .data_models import ClientData, NutritionParams, NutritionResults
+from core.data_models import ClientData, NutritionParams, NutritionResults
 
 
 class MetabolismCalculator:

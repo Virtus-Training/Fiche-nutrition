@@ -4,7 +4,7 @@ Composant de formulaire client pour la saisie des données personnelles
 
 import customtkinter as ctk
 from typing import Dict, Callable, Optional
-from ...core.data_models import ClientData
+from core.data_models import ClientData
 
 
 class ClientForm(ctk.CTkFrame):
